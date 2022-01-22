@@ -1,0 +1,15 @@
+def square_digits(num):
+    numlist=[]
+    
+    # Change to string then square to extract digit, then convert back to int, then square and add into a list
+    for i in str(num):
+        numlist.append(int(i)**2)
+    
+    #make a string variable
+    squareddigit = ""
+    
+    #change each int into string, then concatenate them into a single string
+    for i in numlist:
+        squareddigit+=str(i)
+    
+    return int(squareddigit)
