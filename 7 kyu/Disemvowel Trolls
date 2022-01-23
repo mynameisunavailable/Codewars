@@ -13,7 +13,7 @@ Note: for this kata y isn't considered a vowel.
 Solution:
 
 def disemvowel(string_):
-    vowels = ["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]
+    vowels = "aeiouAEIOU"
     solution = ""
     for i in string_:
         if i not in vowels:
