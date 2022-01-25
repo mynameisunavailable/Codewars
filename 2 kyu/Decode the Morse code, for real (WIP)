@@ -31,6 +31,7 @@ Good luck!
 
 
 Solution:
+
 def decodeBitsAdvanced(bits):
     
     from sklearn.cluster import KMeans
@@ -65,22 +66,27 @@ def decodeBitsAdvanced(bits):
     list1 = np.array(list1)
     list1 = list1.reshape(-1,1)
     
+    #sort list length from shortest to longest
     sorted_list1 = np.sort(list1,axis=0)
-
+    
+    #kmeans clustering with sorted list, shortest length at the start
     kmeans = KMeans(n_clusters=3,random_state=None)
     kmeans.fit(sorted_list1)
     sorted_predicted = kmeans.predict(sorted_list1)
     
+    #find out cluster number of character, shortest to longest
     previous_cluster = 99
     cluster_identity = []
     for i in sorted_predicted:
         if i != previous_cluster:
             cluster_identity.append(i)
         previous_cluster = i
-    cluster_identity
     
+    #kmeans cluster unsorted list
     predicted = kmeans.predict(list1)
-
+    
+    #change cluster number of unsorted list according to the cluster_identity list
+    #shortest will be cluster 0, longest will be 2
     final_predicted = []
     for i in predicted:
         if i == cluster_identity[0]:
@@ -89,7 +95,8 @@ def decodeBitsAdvanced(bits):
             final_predicted.append(1)
         else:
             final_predicted.append(2)
-        
+    
+    #count number of clusters in final_predicted list
     num_clusters = len(np.unique(final_predicted))
     
     #first list is 1s, second list is 0s, so on...
