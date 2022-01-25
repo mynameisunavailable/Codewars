@@ -31,7 +31,6 @@ Good luck!
 
 
 Solution:
-
 def decodeBitsAdvanced(bits):
     
     from sklearn.cluster import KMeans
@@ -54,26 +53,53 @@ def decodeBitsAdvanced(bits):
         listify[count].append(int(i))
         previous = i
     
+    
+    if len(listify) == 1:
+        return (".")
+    
+    
     #length of each list within list of list
     list1 = [len(i) for i in listify]
     
-    if len(list1)>3:
+    #prepare list for kmeans clustering
+    list1 = np.array(list1)
+    list1 = list1.reshape(-1,1)
     
-        #prepare list for kmeans clustering
-        list1 = np.array(list1)
-        list1 = list1.reshape(-1,1)
+    sorted_list1 = np.sort(list1,axis=0)
 
-        kmeans = KMeans(n_clusters=3,random_state=0)
-        kmeans.fit(list1)
-        predicted = kmeans.predict(list1)
+    kmeans = KMeans(n_clusters=3,random_state=None)
+    kmeans.fit(sorted_list1)
+    sorted_predicted = kmeans.predict(sorted_list1)
+    
+    previous_cluster = 99
+    cluster_identity = []
+    for i in sorted_predicted:
+        if i != previous_cluster:
+            cluster_identity.append(i)
+        previous_cluster = i
+    cluster_identity
+    
+    predicted = kmeans.predict(list1)
 
-        #first list is 1s, second list is 0s, so on...
-        #if list is 0s and shortest then is "", if long then " ", if longest then "   "
-        #if list is 1s and long or longest then is "-", otherwise is "."
-        dad = ""
-        bit_identity = 1
+    final_predicted = []
+    for i in predicted:
+        if i == cluster_identity[0]:
+            final_predicted.append(0)
+        elif i == cluster_identity[1]:
+            final_predicted.append(1)
+        else:
+            final_predicted.append(2)
+        
+    num_clusters = len(np.unique(final_predicted))
+    
+    #first list is 1s, second list is 0s, so on...
+    #if list is 0s and shortest then is "", if long then " ", if longest then "   "
+    #if list is 1s and long or longest then is "-", otherwise is "."
+    dad = ""
+    bit_identity = 1
 
-        for i in predicted:
+    if num_clusters == 3:
+        for i in final_predicted:
             if bit_identity == 0:
                 bit_identity = 1
                 if i == 0:
@@ -89,26 +115,18 @@ def decodeBitsAdvanced(bits):
                 else:
                     dad += "."
 
-        return dad
-    
-    elif 1 < len(list1) < 4:
-        #prepare list for kmeans clustering
-        list1 = np.array(list1)
-        list1 = list1.reshape(-1,1)
-
-        kmeans = KMeans(n_clusters=1)
-        kmeans.fit(list1)
-        predicted = kmeans.predict(list1)
-        
-        dad = ""
-        bit_identity = 1
-        for i in predicted:
+    elif num_clusters == 2:
+        for i in final_predicted:
             if bit_identity == 0:
                 bit_identity = 1
                 if i == 0:
                     dad += ""
                 elif i == 1:
-                    dad += " "
+                    #long pause more than five times longer than short pause
+                    if min(list1) * 5 < max(list1):
+                        dad += "   "
+                    else:
+                        dad += " "
             elif bit_identity == 1:
                 bit_identity = 0
                 if i == 1:
@@ -116,18 +134,19 @@ def decodeBitsAdvanced(bits):
                 else:
                     dad += "."
 
+    elif num_clusters == 1:
+        for i in final_predicted:
+            if bit_identity == 0:
+                bit_identity = 1
+                dad+= ""
+            elif bit_identity == 1:
+                bit_identity = 0
+                dad += "."
     
-    elif len(list1) == 1:
-        return "."
-        
+    return dad
+
     
 def decodeMorse(morse_code):
-
-    #remove spaces before the first code
-    for i,j in enumerate(morse_code):
-        if j != " ":
-            morse_code = morse_code[i:]
-            break
 
     #split string into words
     morse_code = morse_code.split("   ")
