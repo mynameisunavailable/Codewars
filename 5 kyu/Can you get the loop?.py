@@ -14,7 +14,9 @@ Don't miss dmitry's article in the discussion after you pass the Kata !!
 ALGORITHMSHACKING HOLIDAYS
 
 
-Solution:
+Solution 1:
+
+def loop_size(node):
     node_history = []
     
     #check if node.next is in node_history list
@@ -26,3 +28,18 @@ Solution:
         
         node = node.next
         node_history.append(node)
+
+Solution 2:
+
+#faster solution because dictionary looks up faster than lists generally
+def loop_size(node):
+    node_history = {}
+    i=0
+    while 1:
+
+        if node.next in node_history:
+            return i-node_history[node.next]
+
+        node = node.next
+        node_history[node] = i
+        i+=1
