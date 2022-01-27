@@ -50,6 +50,8 @@ def valid_solution(board):
         return False
     
     #rotate board 90 degrees
+    #for i in zip(*board):
+    #   print(i)
     alt_board = [[] for i in range(1,10)]
     for i,j in enumerate(board):
         for k in range(0,9):
