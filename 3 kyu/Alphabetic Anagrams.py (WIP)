@@ -20,7 +20,15 @@ BOOKKEEPER = 10743
 ALGORITHMSMATHEMATICSNUMBERSSTRINGS
 
 
-Solution:
+Solution (too slow):
+
+def listPosition(word):
+    from itertools import permutations
+    word_perm = {j:i for i,j in enumerate(permutations(sorted(word),len(word)))}
+    return list(word_perm).index(tuple(word))
+
+
+Solution (too slow):
 
 def listPosition(word):
     from itertools import permutations
